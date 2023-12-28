@@ -20,6 +20,8 @@ type ButtonType = {
     name:string
     disabled:boolean
     onClick:()=>void
+
+    visibility?:boolean
 }
 export const StyledBtn = styled.button<ButtonType>`
   margin: ${props => props.margin || ''};
@@ -30,6 +32,7 @@ export const StyledBtn = styled.button<ButtonType>`
   border-radius: 10px;
   width: ${props => props.width};
   height: ${props => props.height || ''};
+  display: ${props => props.visibility===false? "none":""};
 
   &:active {
     opacity: 50%;

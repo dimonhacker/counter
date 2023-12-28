@@ -11,19 +11,20 @@ type WrapperType = {
     justify?: string
     align?: string
 
-    margin?: string
-    padding?: string
+    mgn?: string
+    pdg?: string
     isPointer?: boolean
-    borderVisible?:string
+    bordervisible?:string
+    visibility?:boolean
 }
 
 
 
 export const StyledWrapper = styled.div<WrapperType>`
 
-  margin: ${props => props.margin || ''};
-  padding: ${props => props.padding || ''};
-  display: flex;
+  margin: ${props => props.mgn || ''};
+  padding: ${props => props.pdg || ''};
+  display: ${props => props.visibility===false? "none":"flex"};
   flex-direction: ${props => props.direction || ''};
   justify-content: ${props => props.justify || 'center'};
   align-items: ${props => props.align || 'center'};
@@ -34,7 +35,7 @@ export const StyledWrapper = styled.div<WrapperType>`
   width: ${props => props.width};
   height: ${props => props.height || ''};
   gap: ${props => (props.gap) || '0px'};
-  border: ${props => (props.borderVisible) || ""};
+  border: ${props => (props.bordervisible) || ""};
 
   .red {
     color: red;
