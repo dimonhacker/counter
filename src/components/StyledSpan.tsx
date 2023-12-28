@@ -16,8 +16,8 @@ type SpanType = {
 
 export const StyledSpan = styled.span<SpanType>`
   color: ${props=> props.color || "#282c34"};
-  font-size: ${props=> props.size ||"4em"};
-  font-weight: 700;
+  font-size: ${props=> props.size ||"3em"};
+  font-weight: 600;
   padding-left: 0.5em;
   padding-right: 0.5em;
 `

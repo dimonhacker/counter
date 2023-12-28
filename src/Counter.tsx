@@ -1,6 +1,4 @@
 import React, {useState} from 'react';
-import styled from 'styled-components';
-import {useAutoAnimate} from "@formkit/auto-animate/react";
 import {StyledButton} from "./components/StyledButton";
 import {StyledSpan} from "./components/StyledSpan";
 import {StyledWrapper} from "./components/StyledWrapper";
@@ -27,9 +25,9 @@ export const Counter = (props: CounterType) => {
     const setMinTmp = (val: number) => {
         setMn(val);
     }
+
     const checkValid = () => {
-        let val = checkMaxValid() && checkMinValid()
-        return val;
+        return checkMaxValid() && checkMinValid();
     }
     const checkMaxValid = () => {
         return max - min > 0 && max > 0
@@ -37,7 +35,34 @@ export const Counter = (props: CounterType) => {
     const checkMinValid = () => {
         return min >= 0
     }
-
+    function getTextObject(){
+        if(checkValid()) {
+            if (max !== props.maxCount || min !== props.startCount) {
+                return  {text:'enter values and press \'set\'',valid:true, ready:false}
+            }
+            else if (max === props.maxCount && min === props.startCount) {
+                return  {text:props.count.toString(), valid: true, ready:true}
+            }
+        }
+        else  return   {text:'Incorrect Values!',valid: false, ready:false}
+        return {text:props.count.toString(), valid: true, ready:true}
+    }
+    const isBtnSetDisabled = () => {
+        return !checkValid() || (max === props.maxCount && min === props.startCount)
+    }
+    const isBtnIncDisabled = ()=>{
+        return props.block || !getTextObject()['ready']
+    }
+    const isBtnResetDisabled = ()=>{
+        return (props.count === props.startCount) || !getTextObject()['ready']
+    }
+    const setValues = () => {
+        props.setStart(min);
+        props.setMax(max);
+        props.incHandler(min)
+        localStorage.setItem("max",JSON.stringify(max))
+        localStorage.setItem("min",JSON.stringify(min))
+    }
     return (
         <StyledWrapper color={color} filled={false} borderVisible={"none"} justify={"space-around"} width={"70vw"}>
             <StyledWrapper height={"380px"} width={"480px"} color={color} filled={false} direction={"column"}
@@ -58,11 +83,7 @@ export const Counter = (props: CounterType) => {
                 </StyledWrapper>
                 <StyledWrapper margin={"0 20px 20px 20px"} padding={"10px"} width={"90%"} color={color} filled={false}
                                justify={"space-around"}>
-                    <StyledButton name={"set"} disabled={!checkValid()} onClick={() => {
-                        props.setStart(min);
-                        props.setMax(max);
-                        props.incHandler(min)
-                    }}
+                    <StyledButton name={"set"} disabled={isBtnSetDisabled()} onClick={setValues}
                                   color={color}/>
                 </StyledWrapper>
             </StyledWrapper>
@@ -70,12 +91,13 @@ export const Counter = (props: CounterType) => {
                            gap={"20px"} justify={"start"}>
                 <StyledWrapper height={"60%"} width={"90%"} color={color} filled={true}
                                margin={"1.5em 1.5em 0 1.5em"}><StyledSpan
-                    className={props.block ? 'red' : ''}>{props.count.toString()}</StyledSpan></StyledWrapper>
+                    className={props.block && getTextObject()['ready'] ?  'red' : ''}
+                    color={!getTextObject()['valid'] ? 'red' : ''}>{getTextObject()['text']}</StyledSpan></StyledWrapper>
                 <StyledWrapper margin={"0 20px 20px 20px"} padding={"10px"} width={"90%"} color={color} filled={false}
                                justify={"space-around"}>
-                    <StyledButton name={"inc"} disabled={props.block} onClick={() => props.incHandler(props.count + 1)}
+                    <StyledButton name={"inc"} disabled={isBtnIncDisabled()} onClick={() => props.incHandler(props.count + 1)}
                                   color={color}/>
-                    <StyledButton name={"reset"} disabled={props.count === props.startCount}
+                    <StyledButton name={"reset"} disabled={isBtnResetDisabled()}
                                   onClick={() => props.incHandler(props.startCount)}
                                   color={color}/>
                 </StyledWrapper>
